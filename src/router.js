@@ -1,25 +1,56 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import firebase from 'firebase'
+import Vue      from 'vue'
+import Router   from 'vue-router'
+import App      from './views/app/App.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      component: App,
+      beforeEnter: (to, from, next) => {
+        if (firebase.auth().currentUser) {
+          next()
+        } else {
+          next({ name: 'SignLogin' })
+        }
+      },
+      children: [
+        {
+          path: '',
+          name: 'Home',
+          component: () => import(/* webpackChunkName: "Home" */ './views/app/Home.vue')
+        }
+      ]
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      path: '/sign',
+      name: 'Sign',
+      component: () => import(/* webpackChunkName: "Sign" */ './views/sign/Sign.vue'),
+      beforeEnter: (to, from, next) => {
+        if (!firebase.auth().currentUser) {
+          next()
+        } else {
+          next({ name: 'Home' })
+        }
+      },
+      children: [
+        {
+          path: 'login',
+          name: 'SignLogin',
+          component: () => import(/* webpackChunkName: "SignLogin" */ './views/sign/SignLogin.vue')
+        },
+        {
+          path: 'up',
+          name: 'SignUp',
+          component: () => import(/* webpackChunkName: "SignUp" */ './views/sign/SignUp.vue')
+        }
+      ]
     }
   ]
 })
+export default router;
