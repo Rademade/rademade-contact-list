@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const state = {}
 const mutations = {}
@@ -7,10 +8,8 @@ const actions = {
   async firebaseSignUp () {
     try {
       await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
-      console.log('Success');
       return true;
     } catch (e) {
-      console.log(e);
       return e;
     }
   },

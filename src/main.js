@@ -3,9 +3,9 @@ import VueFire  from 'vuefire';
 import App      from './App.vue';
 import router   from './router';
 import store    from '@/store/index';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import 'firebase/firestore';
-
 Vue.config.productionTip = false;
 Vue.use(VueFire)
 
